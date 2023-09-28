@@ -1,7 +1,6 @@
 mod name_world_algo;
 
 use std::fs::read_to_string;
-use std::string::ToString;
 use std::env;
 use crate::name_world_algo::display_result;
 
@@ -18,7 +17,7 @@ fn main() {
 
     let content = match read_to_string(FILE_NAME) {
         Ok(c) => c,
-        Err(e) =>{
+        Err(_e) =>{
             println!("File './names.txt' could not be read...");
             std::process::exit(0);
         }
@@ -27,7 +26,7 @@ fn main() {
 
     let builder = name_world_algo::Generator::new(&lines);
 
-    let res = match builder.build_one(&word) {
+    let res = match builder.generate_one(&word) {
         Some(res) => res,
         None => {
             println!("Can't form '{}' from supplied wordlist...", word);

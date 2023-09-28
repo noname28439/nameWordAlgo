@@ -78,9 +78,9 @@ impl<'a> Generator<'_> {
     }
 
     //TODO: Implement function to return all possible combinations
-    // pub fn generate_all(&self, word:&String){
-    //
-    // }
+    pub fn generate_all(&self, word:&String){
+        
+    }
 
     fn try_next(&self, current_state: SearchState, word: &str) -> Option<ResultState> {
         if current_state.word_progress>=word.len() {
@@ -93,7 +93,7 @@ impl<'a> Generator<'_> {
         let possible_names:Vec<_> = self.name_set.iter().enumerate().filter(
             |(index, name)|{name.contains(next_letter)&&!current_state.uses_name(index)}
         ).collect();
-        for (name_index, name) in possible_names.iter() {
+        for (name_index, _name) in possible_names.iter() {
             let mut next_names = current_state.names.to_vec();
             next_names.push(WordUsage{
                 name_index: *name_index,
