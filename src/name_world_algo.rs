@@ -73,19 +73,10 @@ impl<'a> Generator<'_> {
         Generator {name_set }
     }
 
-    // pub fn generate_one(&self, word:&String) -> Option<ResultState> {
-    //     self.try_next(SearchState::new(), &word)
-    // }
-
     pub fn generate(&self, word:&String) -> Vec<ResultState>{
         let mut results:Vec<ResultState> = vec![];
         self.try_next(SearchState::new(), &word, &mut results);
         results
-    }
-
-    //TODO: Implement function to return all possible combinations
-    pub fn generate_all(&self, word:&String){
-        
     }
 
     fn try_next(&'a self, current_state: SearchState, word: &str, results: &mut Vec<ResultState<'a>>) {
