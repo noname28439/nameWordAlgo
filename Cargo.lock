@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "nameWordAlgo"
+name = "name_word_algo"
 version = "0.1.0"
 dependencies = [
  "enable-ansi-support",

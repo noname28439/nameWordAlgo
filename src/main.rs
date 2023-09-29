@@ -28,10 +28,14 @@ fn main() {
 
     let generated = builder.generate(&word, usize::MAX);
 
-    println!("Generated {} combinations. press enter to print one at a time", generated.len());
+    println!("Generated {} combinations. \nPress enter to print one at a time. \nEnter \"quit\" to terminate", generated.len());
 
     for res in generated{
-        std::io::stdin().read_line(&mut String::new());
+        let mut read = String::new();
+        let _ = std::io::stdin().read_line(&mut read);
+        if read.starts_with("q"){
+            std::process::exit(0);
+        }
         display_result(&res);
     }
 
