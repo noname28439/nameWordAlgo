@@ -73,8 +73,14 @@ impl<'a> Generator<'_> {
         Generator {name_set }
     }
 
-    pub fn generate_one(&self, word:&String) -> Option<ResultState> {
-        self.try_next(SearchState::new(), &word)
+    // pub fn generate_one(&self, word:&String) -> Option<ResultState> {
+    //     self.try_next(SearchState::new(), &word)
+    // }
+
+    pub fn generate(&self, word:&String) -> Vec<ResultState>{
+        let mut results:Vec<ResultState> = vec![];
+        self.try_next(SearchState::new(), &word, &mut results);
+        results
     }
 
     //TODO: Implement function to return all possible combinations
@@ -82,12 +88,13 @@ impl<'a> Generator<'_> {
         
     }
 
-    fn try_next(&self, current_state: SearchState, word: &str) -> Option<ResultState> {
+    fn try_next(&'a self, current_state: SearchState, word: &str, results: &mut Vec<ResultState<'a>>) {
         if current_state.word_progress>=word.len() {
-            return Some(ResultState{
+            results.push(ResultState{
                 names: current_state.names.to_vec(),
                 name_set: self.name_set,
-            })
+            });
+            return;
         }
         let next_letter = word.chars().nth(current_state.word_progress).unwrap();
         let possible_names:Vec<_> = self.name_set.iter().enumerate().filter(
@@ -103,12 +110,8 @@ impl<'a> Generator<'_> {
                 word_progress: current_state.word_progress+1,
                 names: next_names,
             };
-            let result = self.try_next(next_state, word);
-            if result.is_some() {
-                return result;
-            }
+            self.try_next(next_state, word, results);
         }
-        None
     }
 }
 

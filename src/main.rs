@@ -1,6 +1,7 @@
 mod name_world_algo;
 
 use std::fs::read_to_string;
+use std::string::ToString;
 use std::env;
 use crate::name_world_algo::display_result;
 
@@ -26,14 +27,20 @@ fn main() {
 
     let builder = name_world_algo::Generator::new(&lines);
 
-    let res = match builder.generate_one(&word) {
-        Some(res) => res,
-        None => {
-            println!("Can't form '{}' from supplied wordlist...", word);
-            std::process::exit(0);
-        }
-    };
+    let generated = builder.generate(&word);
 
-    display_result(&res);
+    for res in generated{
+        display_result(&res);
+    }
+
+    // let res = match generated.get(0) {
+    //     Some(res) => res,
+    //     None => {
+    //         println!("Can't form '{}' from supplied wordlist...", word);
+    //         std::process::exit(0);
+    //     }
+    // };
+    //
+    // display_result(&res);
 
 }
