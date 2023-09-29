@@ -73,13 +73,14 @@ impl<'a> Generator<'_> {
         Generator {name_set }
     }
 
-    pub fn generate(&self, word:&String) -> Vec<ResultState>{
+    pub fn generate(&self, word:&String, max:usize) -> Vec<ResultState>{
         let mut results:Vec<ResultState> = vec![];
-        self.try_next(SearchState::new(), &word, &mut results);
+        self.try_next(SearchState::new(), &word, &mut results, max);
         results
     }
 
-    fn try_next(&'a self, current_state: SearchState, word: &str, results: &mut Vec<ResultState<'a>>) {
+    fn try_next(&'a self, current_state: SearchState, word: &str, results: &mut Vec<ResultState<'a>>, max:usize) {
+        if max!=usize::MAX && results.len()>=max {return}
         if current_state.word_progress>=word.len() {
             results.push(ResultState{
                 names: current_state.names.to_vec(),
@@ -91,6 +92,7 @@ impl<'a> Generator<'_> {
         let possible_names:Vec<_> = self.name_set.iter().enumerate().filter(
             |(index, name)|{name.contains(next_letter)&&!current_state.uses_name(index)}
         ).collect();
+        
         for (name_index, _name) in possible_names.iter() {
             let mut next_names = current_state.names.to_vec();
             next_names.push(WordUsage{
@@ -101,7 +103,7 @@ impl<'a> Generator<'_> {
                 word_progress: current_state.word_progress+1,
                 names: next_names,
             };
-            self.try_next(next_state, word, results);
+            self.try_next(next_state, word, results, max);
         }
     }
 }
