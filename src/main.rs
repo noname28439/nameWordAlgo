@@ -26,9 +26,12 @@ fn main() {
 
     let builder = name_world_algo::Generator::new(&lines);
 
-    let generated = builder.generate(&word, 3);
+    let generated = builder.generate(&word, usize::MAX);
+
+    println!("Generated {} combinations. press enter to print one at a time", generated.len());
 
     for res in generated{
+        std::io::stdin().read_line(&mut String::new());
         display_result(&res);
     }
 
