@@ -69,11 +69,9 @@ pub struct Generator<'a>{
 }
 
 impl<'a> Generator<'_> {
-    pub fn new(name_set: &'a Vec<String>) -> Generator {
-        Generator {name_set }
-    }
+    pub fn new(name_set: &'a Vec<String>) -> Generator {Generator {name_set}}
 
-    pub fn generate(&self, word:&String, max:usize) -> Vec<ResultState>{
+    pub fn generate(&self, word:&str, max:usize) -> Vec<ResultState>{
         let mut results:Vec<ResultState> = vec![];
         self.try_next(SearchState::new(), &word, &mut results, max);
         results
@@ -108,3 +106,44 @@ impl<'a> Generator<'_> {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn default_names() -> Vec<String>{
+        vec!["joe ratata".to_string(), "jake lakelbake".to_string(), "sam smankalanka".to_string(), "mae traco".to_string()]
+    }
+
+    #[test]
+    fn test_algo_fail() {
+        let default_names = default_names();
+        let gen = Generator::new(&default_names);
+        let res = gen.generate("xxxx", usize::MAX);
+
+        assert_eq!(res.len(), 0);
+    }
+
+    #[test]
+    fn test_algo_result_quantity() {
+        let default_names = default_names();
+        let gen = Generator::new(&default_names);
+
+        assert_eq!(gen.generate("test", usize::MAX).len(), 2);
+        assert_eq!(gen.generate("lol", usize::MAX).len(), 4);
+
+    }
+
+    #[test]
+    fn test_algo_result_quality() {
+        let default_names = default_names();
+        let gen = Generator::new(&default_names);
+        let res = gen.generate("test", usize::MAX);
+        let example_res = res.get(0).unwrap();
+
+        for usage in example_res.names.iter(){
+            let name = example_res.name_set.get(usage.name_index).unwrap();
+
+            assert!(name.contains(usage.letter));
+        }
+    }
+}
