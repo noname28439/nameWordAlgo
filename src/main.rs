@@ -30,13 +30,21 @@ fn main() {
 
     println!("Generated {} combinations. \nPress enter to print one at a time. \nEnter \"quit\" to terminate", generated.len());
 
-    for res in generated{
+    if word.len()<lines.len(){
+        println!("---\nWarning: Only {} out of {} names used.\n---", word.len(), lines.len());
+    }else if word.len()>lines.len(){
+        println!("---\nError: Can't generate word with {} letters from list of {} names.\n---", word.len(), lines.len());
+        return;
+    }
+
+    for (index, res) in generated.iter().enumerate(){
         let mut read = String::new();
         let _ = std::io::stdin().read_line(&mut read);
         if read.starts_with("q"){
             std::process::exit(0);
         }
-        display_result(&res);
+        println!("Result Nr. {}: ", index);
+        display_result(res);
     }
 
 }

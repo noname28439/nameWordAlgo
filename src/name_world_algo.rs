@@ -22,6 +22,7 @@ impl SearchState{
             names: vec![]
         }
     }
+
     pub fn uses_name(&self, name_index:&usize)->bool{
         let mut found:bool = false;
         for name in &self.names{
@@ -44,8 +45,6 @@ pub fn display_result(res:&ResultState){
         if letter_index>max_left {max_left=letter_index}
         display_lines.push((letter_index, name.to_string()));
     }
-
-    println!("{} of {} names used: ", res.names.len(), res.name_set.len());
 
     for (letter_index, name) in display_lines{
         let offset = max_left-letter_index;
@@ -74,6 +73,22 @@ impl<'a> Generator<'_> {
     pub fn generate(&self, word:&str, max:usize) -> Vec<ResultState>{
         let mut results:Vec<ResultState> = vec![];
         self.try_next(SearchState::new(), &word, &mut results, max);
+        results
+    }
+
+    pub fn generate_fix_first(&self, word:&str, max:usize, list_index:usize) -> Vec<ResultState>{
+        let first_letter = word.chars().nth(0).unwrap();
+        assert!(self.name_set.get(list_index).unwrap().contains(word.chars().nth(0).unwrap()),
+                "Name at index {} doesn't contain the letter \"{}\"", list_index, first_letter);
+
+        let mut results:Vec<ResultState> = vec![];
+        self.try_next(SearchState{
+            word_progress: 1,
+            names: vec![WordUsage{
+                letter: first_letter,
+                name_index: list_index
+            }]
+        }, &word, &mut results, max);
         results
     }
 
@@ -145,5 +160,28 @@ mod tests {
 
             assert!(name.contains(usage.letter));
         }
+    }
+
+    #[test]
+    fn test_algo_first_fix() {
+        let default_names = default_names();
+        let gen = Generator::new(&default_names);
+        let res = gen.generate_fix_first("test", usize::MAX, 0);
+
+        //make sure the first used name is always the specified one
+        for cres in &res{
+            assert_eq!(cres.names.get(0).unwrap().name_index, 0)
+        }
+        assert_eq!(res.len(), 1)
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_algo_first_fix_invalidity() {
+        let default_names = default_names();
+        let gen = Generator::new(&default_names);
+
+        //invalid as "sam smankalanka" doesn't contain the first letter 't'
+        let res = gen.generate_fix_first("test", usize::MAX, 2);
     }
 }
