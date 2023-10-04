@@ -41,7 +41,7 @@ pub fn display_result(res:&ResultState){
 
     for usage in res.names.iter(){
         let name = res.name_set.get(usage.name_index).unwrap();
-        let letter_index = name.find(usage.letter).unwrap();
+        let letter_index = name.chars().position(|c| c == usage.letter).unwrap();
         if letter_index>max_left {max_left=letter_index}
         display_lines.push((letter_index, name.to_string()));
     }
