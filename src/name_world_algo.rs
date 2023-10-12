@@ -94,7 +94,7 @@ impl<'a> Generator<'_> {
 
     fn try_next(&'a self, current_state: SearchState, word: &str, results: &mut Vec<ResultState<'a>>, max:usize) {
         if max!=usize::MAX && results.len()>=max {return}
-        if current_state.word_progress>=word.len() {
+        if current_state.word_progress>=word.chars().count() {
             results.push(ResultState{
                 names: current_state.names.to_vec(),
                 name_set: self.name_set,
